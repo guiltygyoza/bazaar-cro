@@ -65,14 +65,14 @@ function App() {
 	useEffect(() => {
 
 		const startNode = async () => {
-            const node = new TopologyNode;
+			const node = new TopologyNode;
 			await node.start();
 			setPeerId(node.networkNode.peerId);
 			node.addCustomGroupMessageHandler("", (e) => {
 				setPeers(node.networkNode.getAllPeers());
 				setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
 			});
-            setNode(node);
+			setNode(node);
 			console.log('startNode() completed')
 		};
 
