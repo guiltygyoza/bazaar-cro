@@ -1,4 +1,5 @@
-# An experiment to create a bazaar with CRO
+# Bazaar
+Experimenting with CROs.
 
 ### Setup
 ```
