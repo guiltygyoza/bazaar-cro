@@ -5,8 +5,6 @@ import { TopologyNode } from "@topology-foundation/node";
 // import { Bazaar } from "./objects/bazaar";
 import { hslToRgb, rgbToHex, rgbToHsl } from "./util/color";
 
-const node = new TopologyNode();
-
 const formatNodeId = (id: string): string => {
 	return `${id.slice(0, 4)}...${id.slice(-4)}`;
 };
@@ -59,20 +57,22 @@ const createPeerTags = (peerIds: string[]): JSX.Element[] => {
 };
 
 function App() {
-	const [peerId, setPeerId] = useState(node.networkNode.peerId);
+    const [node, setNode] = useState<TopologyNode>();
+	const [peerId, setPeerId] = useState<string>("");
 	const [peers, setPeers] = useState<string[]>([]);
 	const [discoveryPeers, setDiscoveryPeers] = useState<string[]>([]);
 
 	useEffect(() => {
 
 		const startNode = async () => {
+            const node = new TopologyNode;
 			await node.start();
 			setPeerId(node.networkNode.peerId);
 			node.addCustomGroupMessageHandler("", (e) => {
 				setPeers(node.networkNode.getAllPeers());
 				setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
-				console.log('customGroupMessageHandler called')
 			});
+            setNode(node);
 			console.log('startNode() completed')
 		};
 
