@@ -18,8 +18,11 @@ const hashCode = (str: string): number => {
 	return hash;
 };
 
-function App() {
-	const [node, setNode] = useState<TopologyNode>();
+interface AppProps {
+	node: TopologyNode;
+  }
+
+function App({ node } : AppProps) {
 	const [peerId, setPeerId] = useState<string>("");
 	const [peers, setPeers] = useState<string[]>([]);
 	const [discoveryPeers, setDiscoveryPeers] = useState<string[]>([]);
@@ -63,20 +66,15 @@ function App() {
 	// init
 	useEffect(() => {
 
-		const startNode = async () => {
-			const node_ = new TopologyNode;
-			await node_.start();
-			setPeerId(node_.networkNode.peerId);
-			node_.addCustomGroupMessageHandler("", (e) => {
-				setPeers(node_.networkNode.getAllPeers());
-				setDiscoveryPeers(node_.networkNode.getGroupPeers("topology::discovery"));
-				console.log('group message handler fired')
-			});
-			setNode(node_);
-			console.log('startNode() completed')
-		};
+		setPeerId(node.networkNode.peerId);
 
-		startNode();
+		node.addCustomGroupMessageHandler("", (e) => {
+			setPeers(node.networkNode.getAllPeers());
+			setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
+			console.log('group message handler fired')
+		});
+
+		console.log('init completed')
 
 		return () => {
 			// Cleanup if necessary
