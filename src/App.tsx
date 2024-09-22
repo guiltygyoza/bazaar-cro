@@ -46,20 +46,18 @@ function App() {
 	};
 
 	const createPeerTags = (peerIds: string[]): JSX.Element[] => {
-    return peerIds.reduce((acc, peer, index) => {
-        const peerTag = (
-            <strong key={peer} style={{ color: getColorForNodeId(peer) }}>
-                {formatNodeId(peer)}
-            </strong>
-        );
-
-        // If it's not the first element, add a comma before the current element
-        if (index > 0) {
-            acc.push(<span>,</span>);
-        }
-        acc.push(peerTag);
-        return acc;
-    }, [] as JSX.Element[]);
+		return peerIds.reduce((acc, peer, index) => {
+			const peerTag = (
+				<strong key={peer} style={{ color: getColorForNodeId(peer) }}>
+					{formatNodeId(peer)}
+				</strong>
+			);
+			if (index > 0) {
+				acc.push(<span>,</span>);
+			}
+			acc.push(peerTag);
+			return acc;
+		}, [] as JSX.Element[]);
 	};
 
 	// init
