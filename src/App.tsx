@@ -68,12 +68,12 @@ function App() {
 		const startNode = async () => {
 			await node.start();
 			setPeerId(node.networkNode.peerId);
-            node.addCustomGroupMessageHandler("", (e) => {
-                setPeers(node.networkNode.getAllPeers());
-                setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
-                console.log('customGroupMessageHandler called')
-            });
-            console.log('startNode() completed')
+			node.addCustomGroupMessageHandler("", (e) => {
+				setPeers(node.networkNode.getAllPeers());
+				setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
+				console.log('customGroupMessageHandler called')
+			});
+			console.log('startNode() completed')
 		};
 
 		startNode();
