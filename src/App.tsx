@@ -9,8 +9,6 @@ const formatNodeId = (id: string): string => {
 	return `${id.slice(0, 4)}...${id.slice(-4)}`;
 };
 
-const colorMap: Map<string, string> = new Map();
-
 const hashCode = (str: string): number => {
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
@@ -20,26 +18,34 @@ const hashCode = (str: string): number => {
 	return hash;
 };
 
-const getColorForNodeId = (id: string): string => {
-	if (!colorMap.has(id)) {
-		const hash = hashCode(id);
-		let r = (hash & 0xff0000) >> 16;
-		let g = (hash & 0x00ff00) >> 8;
-		let b = hash & 0x0000ff;
+function App() {
+	const [node, setNode] = useState<TopologyNode>();
+	const [peerId, setPeerId] = useState<string>("");
+	const [peers, setPeers] = useState<string[]>([]);
+	const [discoveryPeers, setDiscoveryPeers] = useState<string[]>([]);
 
-		// Convert to HSL and adjust lightness to be below 50%
-		let [h, s, l] = rgbToHsl(r, g, b);
-		l = l * 0.5; // Set lightness to below 50%
+	const colorMap: Map<string, string> = new Map();
 
-		// Convert back to RGB
-		[r, g, b] = hslToRgb(h, s, l);
-		const color = rgbToHex(r, g, b); // Convert RGB to hex
-		colorMap.set(id, color);
-	}
-	return colorMap.get(id) || "#000000";
-};
+	const getColorForNodeId = (id: string): string => {
+		if (!colorMap.has(id)) {
+			const hash = hashCode(id);
+			let r = (hash & 0xff0000) >> 16;
+			let g = (hash & 0x00ff00) >> 8;
+			let b = hash & 0x0000ff;
 
-const createPeerTags = (peerIds: string[]): JSX.Element[] => {
+			// Convert to HSL and adjust lightness to be below 50%
+			let [h, s, l] = rgbToHsl(r, g, b);
+			l = l * 0.5; // Set lightness to below 50%
+
+			// Convert back to RGB
+			[r, g, b] = hslToRgb(h, s, l);
+			const color = rgbToHex(r, g, b); // Convert RGB to hex
+			colorMap.set(id, color);
+		}
+		return colorMap.get(id) || "#000000";
+	};
+
+	const createPeerTags = (peerIds: string[]): JSX.Element[] => {
     return peerIds.reduce((acc, peer, index) => {
         const peerTag = (
             <strong key={peer} style={{ color: getColorForNodeId(peer) }}>
@@ -54,25 +60,21 @@ const createPeerTags = (peerIds: string[]): JSX.Element[] => {
         acc.push(peerTag);
         return acc;
     }, [] as JSX.Element[]);
-};
+	};
 
-function App() {
-    const [node, setNode] = useState<TopologyNode>();
-	const [peerId, setPeerId] = useState<string>("");
-	const [peers, setPeers] = useState<string[]>([]);
-	const [discoveryPeers, setDiscoveryPeers] = useState<string[]>([]);
-
+	// init
 	useEffect(() => {
 
 		const startNode = async () => {
-			const node = new TopologyNode;
-			await node.start();
-			setPeerId(node.networkNode.peerId);
-			node.addCustomGroupMessageHandler("", (e) => {
-				setPeers(node.networkNode.getAllPeers());
-				setDiscoveryPeers(node.networkNode.getGroupPeers("topology::discovery"));
+			const node_ = new TopologyNode;
+			await node_.start();
+			setPeerId(node_.networkNode.peerId);
+			node_.addCustomGroupMessageHandler("", (e) => {
+				setPeers(node_.networkNode.getAllPeers());
+				setDiscoveryPeers(node_.networkNode.getGroupPeers("topology::discovery"));
+				console.log('group message handler fired')
 			});
-			setNode(node);
+			setNode(node_);
 			console.log('startNode() completed')
 		};
 
