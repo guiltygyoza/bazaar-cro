@@ -1,7 +1,12 @@
 # An experiment to create a bazaar with CRO
 
-### setup
+### Setup
 ```
 npm install
 npm run dev
+```
+
+### Created with
+```
+npm create vite@latest .
 ```
